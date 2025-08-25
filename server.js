@@ -42,7 +42,9 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const storage = new CloudinaryStorage({
         cloudinary: cloudinary,
         params: {
-            folder: 'GovDocsRepo', // A folder name in your Cloudinary account
+            folder: 'GovDocsRepo',
+            // This is the fix: It tells Cloudinary to automatically detect the file type
+            resource_type: 'auto', 
             public_id: (req, file) => file.originalname.split('.')[0] + '-' + Date.now(),
         },
     });
