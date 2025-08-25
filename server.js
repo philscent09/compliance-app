@@ -97,6 +97,9 @@ app.post('/api/documents', upload.single('attachment'), async (req, res) => {
                 await db.collection('documents').deleteOne({ id: originalDocId });
             }
         }
+		
+		// --- ADD THIS LINE ---
+        delete docData._id; // This is the fix. It removes the protected _id field before the update.
 
         // Use 'upsert' to either update an existing document (e.g., adding a comment) or insert a new one
         await db.collection('documents').updateOne(
