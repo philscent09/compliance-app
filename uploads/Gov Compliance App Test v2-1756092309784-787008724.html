@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facilities Management Group Government Compliance Repository</title>
+    <style>
+        /* --- FONT IMPORT --- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        /* --- CSS VARIABLES (COLOR PALETTE & SIZING) --- */
+        :root {
+            /* Light Mode Colors */
+            --font-family-sans: 'Inter', sans-serif;
+            --color-primary: #4A5568;      /* Slate 600 */
+            --color-primary-hover: #2D3748; /* Slate 800 */
+            --color-secondary: #0d9488;    /* Teal 600 */
+            --color-secondary-hover: #0f766e; /* Teal 700 */
+
+            --color-background: #F8FAFC; /* Slate 50 */
+            --color-surface: #FFFFFF;    /* White */
+            --color-border: #E2E8F0;     /* Slate 200 */
+            --color-table-header-bg: #F9FAFB;
+
+            --color-text-primary: #1E293B;  /* Slate 800 */
+            --color-text-secondary: #64748B;/* Slate 500 */
+            --color-text-white: #FFFFFF;
+
+            /* Status Colors */
+            --color-success: #16A34A;
+            --color-success-bg: #F0FDF4;
+            --color-warning: #D97706;
+            --color-warning-bg: #FFFBEB;
+            --color-danger: #DC2626;
+            --color-danger-bg: #FEF2F2;
+            --color-info: #3B82F6;
+            --color-info-bg: #EFF6FF;
+
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --border-radius: 0.5rem;
+        }
+
+        /* Dark Mode Colors */
+        [data-theme="dark"] {
+            --color-primary: #94A3B8;
+            --color-primary-hover: #64748B;
+            --color-secondary: #14B8A6;
+            --color-secondary-hover: #0D9488;
+
+            --color-background: #0F172A; /* Slate 900 */
+            --color-surface: #1E293B;    /* Slate 800 */
+            --color-border: #334155;     /* Slate 700 */
+            --color-table-header-bg: #111827;
+
+            --color-text-primary: #F8FAFC; /* Slate 50 */
+            --color-text-secondary: #94A3B8;/* Slate 400 */
+            --color-text-white: #1E293B;
+            
+            --color-success-bg: #064E3B;
+            --color-warning-bg: #78350F;
+            --color-danger-bg: #7F1D1D;
+            --color-info-bg: #1E40AF;
+        }
+        
+        /* --- FMG Logo Style --- */
+        .logo-fmg {
+            position: absolute;
+            top: 1.5rem;
+            left: 2.5rem;
+            font-family: var(--font-family-sans);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FF8C00;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            .logo-fmg {
+                position: static;
+                display: block;
+                text-align: center;
+                margin-top: 1rem;
+            }
+        }
+
+        /* --- Theme Switcher Button --- */
+        .theme-switcher {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            background-color: var(--color-primary);
+            color: var(--color-text-white);
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: background-color 0.3s, color 0.3s;
+            position: absolute;
+            top: 0.5rem; 
+            right: 1.5rem; 
+        }
+
+        .theme-switcher:hover {
+            background-color: var(--color-primary-hover);
+        }
+
+        .theme-switcher svg {
+            width: 20px;
+            height: 20px;
+            color: var(--color-text-white);
+        }
+
+        .theme-switcher .theme-label {
+            font-weight: 600;
+        }
+
+        [data-theme="dark"] .theme-switcher {
+            background-color: var(--color-surface);
+            color: var(--color-text-primary);
+            border: 1px solid var(--color-border);
+        }
+
+        [data-theme="dark"] .theme-switcher:hover {
+            background-color: var(--color-background);
+        }
+        [data-theme="dark"] .theme-switcher svg {
+            color: var(--color-text-primary);
+        }
+
+        /* --- GENERAL STYLES & RESETS --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        body {
+            font-family: var(--font-family-sans);
+            background-color: var(--color-background);
+            color: var(--color-text-primary);
+            padding: 2rem;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* --- LAYOUT CONTAINERS --- */
+        .main-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: var(--color-surface);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            padding: 2.5rem;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+
+        .header-title-wrapper {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            background-color: var(--color-primary);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            position: relative;
+            margin-top: 1.5rem;
+            transition: background-color 0.3s;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--color-text-white);
+            line-height: 1.2;
+            transition: color 0.3s;
+        }
+
+        .documents-section {
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: border-color 0.3s;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--color-border);
+            transition: border-color 0.3s;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+            transition: color 0.3s;
+        }
+        
+        /* --- NOTIFICATIONS & ALERTS --- */
+        .notifications-panel, .error-display {
+            border-radius: var(--border-radius);
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            border-width: 1px;
+            border-style: solid;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .notifications-panel {
+            background-color: var(--color-info-bg);
+            border-color: var(--color-info);
+            color: var(--color-info);
+        }
+        .notifications-panel ul {
+            list-style-position: inside;
+            padding-left: 0;
+        }
+        .notifications-panel h2 {
+            border-bottom: none;
+            margin-bottom: 0.5rem;
+            color: var(--color-text-primary);
+        }
+        .notifications-panel li .text-red-700 { color: var(--color-danger); }
+        .notifications-panel li .text-custom-green-teal { color: var(--color-warning); }
+        .error-display {
+            display: none;
+            background-color: var(--color-danger-bg);
+            border-color: var(--color-danger);
+            color: var(--color-danger);
+        }
+        .error-display.active { display: block; }
+        
+        /* --- FORMS, BUTTONS, & INTERACTIVE ELEMENTS --- */
+        .location-add-section {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            background-color: #F9FAFB; /* A slightly off-white */
+            margin-bottom: 2rem;
+            transition: background-color 0.3s;
+        }
+        [data-theme="dark"] .location-add-section {
+            background-color: #1F2937;
+        }
+        .location-add-section .location-selector { flex-grow: 1; }
+
+        label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-text-primary);
+            transition: color 0.3s;
+        }
+
+        select, input[type="text"], input[type="date"], input[type="file"] {
+            width: 100%;
+            padding: 0.65rem 0.75rem;
+            border: 1px solid var(--color-border);
+            border-radius: 0.375rem;
+            background-color: var(--color-surface);
+            color: var(--color-text-primary);
+            box-shadow: var(--shadow-sm);
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(74, 85, 104, 0.2);
+        }
+        [data-theme="dark"] select:focus, [data-theme="dark"] input:focus {
+             box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.2);
+        }
+
+        .action-buttons-group { display: flex; gap: 0.5rem; }
+
+        button {
+            padding: 0.65rem 1.5rem;
+            border-radius: 0.375rem;
+            border: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--color-text-white);
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+        button:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
+
+        #addDocumentBtn { background-color: var(--color-primary); }
+        #addDocumentBtn:hover { background-color: var(--color-primary-hover); }
+
+        #renewDocumentBtn { background-color: var(--color-secondary); }
+        #renewDocumentBtn:hover { background-color: var(--color-secondary-hover); }
+        
+        .toggle-button {
+            background-color: var(--color-text-secondary);
+            font-size: 0.8rem;
+            padding: 0.5rem 1rem;
+        }
+
+        /* Filter Controls */
+        .filter-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            background-color: #F9FAFB;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            transition: background-color 0.3s;
+        }
+        [data-theme="dark"] .filter-group {
+            background-color: #1F2937;
+        }
+        .filter-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            margin-bottom: 0;
+        }
+
+        /* --- TABLE STYLES --- */
+        .table-container { 
+            overflow-x: auto;
+            transition: opacity 0.3s ease, max-height 0.3s ease;
+            max-height: 1000px; /* arbitrary large value */
+            opacity: 1;
+        }
+        .table-container.hidden {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        
+        .documents-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        .documents-table th, .documents-table td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--color-border);
+            white-space: nowrap;
+        }
+        .documents-table th {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-secondary);
+            background-color: var(--color-table-header-bg);
+            transition: color 0.3s, background-color 0.3s;
+        }
+        .documents-table tbody tr:hover { background-color: var(--color-background); }
+        
+        /* Table Sorting Headers */
+        .sort-header {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+        .sort-icon {
+            display: inline-block;
+            width: 0.5rem;
+            height: 0.5rem;
+            margin-left: 0.5rem;
+            border-left: 1px solid var(--color-text-secondary);
+            border-bottom: 1px solid var(--color-text-secondary);
+            transform: rotate(135deg);
+            transition: transform 0.2s ease-in-out;
+            opacity: 0.5;
+        }
+        .sort-header:hover .sort-icon { opacity: 1; }
+        .sort-asc .sort-icon {
+            transform: rotate(-45deg);
+            opacity: 1;
+        }
+        .sort-desc .sort-icon {
+            transform: rotate(135deg);
+            opacity: 1;
+        }
+
+
+        /* Table Status Pills */
+        .status-span {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-span.success { background-color: var(--color-success-bg); color: var(--color-success); }
+        .status-span.warning { background-color: var(--color-warning-bg); color: var(--color-warning); }
+        .status-span.danger { background-color: var(--color-danger-bg); color: var(--color-danger); }
+
+        /* Table Action Buttons */
+        .actions-cell { display: flex; align-items: center; gap: 0.5rem; }
+        .action-button {
+            display: flex;
+            padding: 0.5rem;
+            border-radius: 9999px;
+            color: var(--color-text-white);
+        }
+        .action-button svg { height: 1rem; width: 1rem; }
+        .download-btn { background-color: var(--color-info); }
+        .edit-button-icon { background-color: var(--color-text-secondary); }
+        .delete-button-icon { background-color: var(--color-danger); }
+        .attachment-indicator { color: var(--color-text-secondary); }
+
+        /* --- MODAL STYLES --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+
+        .modal-content {
+            background-color: var(--color-surface);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s ease, background-color 0.3s;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+
+        .modal-title {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 1rem; right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .modal-form .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        .modal-form .grid-span-2 { grid-column: span 2 / span 2; }
+        .modal-form .flex-justify-between {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            grid-column: span 2 / span 2;
+        }
+        .modal-form button[type="submit"] { background-color: var(--color-primary); }
+        .modal-form button[type="button"] {
+            background-color: var(--color-border);
+            color: var(--color-text-primary);
+        }
+        .modal-form .text-red-500 { color: var(--color-danger); font-size: 0.8rem; }
+        
+        /* Utility */
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="logo-fmg">Facilities Management Group</div>
+        <button id="theme-switcher" class="theme-switcher" aria-label="Toggle dark mode">
+            <div class="icon-wrapper">
+                <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                    <path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.106a.75.75 0 0 0-1.06-.068l-1.895 1.894a.75.75 0 1 0 1.06 1.06l1.894-1.894a.75.75 0 0 0 .068-1.06ZM16.5 12a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM12 18.75a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V19.5a.75.75 0 0 1 .75-.75ZM11.166 6.643a.75.75 0 0 1-.369-.824l1.37-5.138a.75.75 0 0 1 1.481.396l-1.37 5.138a.75.75 0 0 1-.823.368ZM18.894 17.894a.75.75 0 0 0-1.06.068l-1.894 1.895a.75.75 0 1 0 1.06 1.06l1.895-1.894a.75.75 0 0 0-.068-1.06ZM3.606 6.106a.75.75 0 0 0 .068 1.06l1.894 1.894a.75.75 0 1 0 1.06-1.06L4.667 5.045a.75.75 0 0 0-1.06.068ZM15.824 11.631a.75.75 0 0 1-1.482-.396l1.37-5.138a.75.75 0 0 1 .824-.368.75.75 0 0 1 .368.824l-1.37 5.138Z" />
+                </svg>
+                <svg id="moon-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                    <path fill-rule="evenodd" d="M9.548 10.741a.75.75 0 0 1 .723.418c1.378.694 2.536 1.83 3.473 3.204a.75.75 0 0 1-.61 1.157 7.5 7.5 0 0 0-7.078-4.502.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
+                    <path d="M12 1.5a.75.75 0 0 1 .75.75V3a.75.75 0 0 1-1.5 0V2.25A.75.75 0 0 1 12 1.5ZM21.5 12a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5a.75.75 0 0 1 .75.75ZM12 21.5a.75.75 0 0 1-.75.75v1.5a.75.75 0 0 1 1.5 0v-1.5a.75.75 0 0 1-.75-.75Z" />
+                    <path fill-rule="evenodd" d="M12 1.5c-5.16 0-9.447 3.922-9.952 9.071-.16.155-.294.321-.403.493a10.024 10.024 0 0 0 16.591-6.154.75.75 0 0 0-.75-.75Z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <span class="theme-label">Toggle dark mode</span>
+        </button>
+        
+        <header class="header-title-wrapper">
+            <h1>Government Compliance Repository</h1>
+        </header>
+
+        <div id="globalNotification" class="error-display" role="alert">
+            <p id="notificationMessage"></p>
+        </div>
+
+        <section class="notifications-panel">
+            <h2>Important Notifications</h2>
+            <ul id="notificationsList" aria-live="polite"></ul>
+        </section>
+
+        <section class="documents-section">
+            <div class="section-header">
+                <h2>Manage Documents</h2>
+            </div>
+            <div class="location-add-section">
+                <div class="location-selector">
+                    <label for="location-select">Filter by Office Location</label>
+                    <select id="location-select" aria-label="Select Office Location">
+                        <option value="">All Locations</option>
+                    </select>
+                </div>
+                <div class="action-buttons-group">
+                     <button id="renewDocumentBtn" aria-label="Renew Existing Document">Renew Document</button>
+                     <button id="addDocumentBtn" aria-label="Add New Document">Add New Document</button>
+                </div>
+            </div>
+
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label><input type="radio" name="documentFilter" value="all" id="filter-all" checked> Show All</label>
+                    <label><input type="radio" name="documentFilter" value="non-expiring" id="filter-non-expiring"> Active</label>
+                    <label><input type="radio" name="documentFilter" value="expiring" id="filter-expiring"> Expiring/Expired</label>
+                </div>
+                <div class="text-filter-group">
+                    <input type="text" id="filter-agency-name" placeholder="Filter by Agency..." />
+                    <input type="text" id="filter-document-name" placeholder="Filter by Document..." />
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="documentsTable" class="documents-table">
+                    <thead>
+                        <tr>
+                            <th>Agency</th>
+                            <th>Document Name</th>
+                            <th>Doc Number</th>
+                            <th>Issued</th>
+                            <th>Expires</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="documentsTableBody"></tbody>
+                    <tfoot id="documentsTableFoot" class="hidden">
+                        <tr>
+                           <td colspan="8" style="text-align: center; padding: 2rem;">No documents match the current filters.</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+
+        <section class="documents-section">
+            <div class="section-header">
+                 <h2>Archived Documents</h2>
+                 <button id="toggleArchivedTableBtn" class="toggle-button">Show/Hide</button>
+            </div>
+            <div id="archived-table-content">
+                <div class="filter-controls">
+                     <input type="text" id="filter-archived-agency" placeholder="Filter by Agency..." />
+                     <input type="text" id="filter-archived-document" placeholder="Filter by Document..." />
+                </div>
+                <div class="table-container" id="archivedTableContainer">
+                    <table id="archivedDocumentsTable" class="documents-table">
+                        <thead>
+                            <tr>
+                                <th class="sort-header" data-sort-key="agencyName">Agency<span class="sort-icon"></span></th>
+                                <th class="sort-header" data-sort-key="documentName">Document Name<span class="sort-icon"></span></th>
+                                <th class="sort-header" data-sort-key="documentNumber">Doc Number<span class="sort-icon"></span></th>
+                                <th class="sort-header" data-sort-key="issuanceDate">Issued<span class="sort-icon"></span></th>
+                                <th class="sort-header" data-sort-key="expirationDate">Expiration Date<span class="sort-icon"></span></th>
+                                <th class="sort-header" data-sort-key="locationId">Location<span class="sort-icon"></span></th>
+                                <th class="sort-header" data-sort-key="archivedAt">Archived At<span class="sort-icon"></span></th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="archivedDocumentsTableBody"></tbody>
+                         <tfoot id="archivedTableFoot" class="hidden">
+                            <tr>
+                               <td colspan="8" style="text-align: center; padding: 2rem;">No archived documents match the current filters.</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="documentModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-content">
+            <button id="closeModalBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+            <h2 id="modal-title" class="modal-title">Add New Document</h2>
+            <form id="documentForm" class="modal-form" novalidate>
+                 <input type="hidden" id="form-document-id" name="id">
+                <input type="hidden" id="form-attachment-data" name="attachmentData">
+                <input type="hidden" id="form-attachment-name" name="attachmentName">
+                <div class="form-grid">
+                    <div class="grid-span-2">
+                        <label for="form-agency-name">Government Agency</label>
+                        <input type="text" id="form-agency-name" name="agencyName" required autofocus />
+                        <p id="agency-name-error" class="text-red-500 hidden"></p>
+                    </div>
+                    <div class="grid-span-2">
+                        <label for="form-document-name">Document Name</label>
+                        <input type="text" id="form-document-name" name="documentName" required />
+                        <p id="document-name-error" class="text-red-500 hidden"></p>
+                    </div>
+                    <div class="grid-span-2">
+                        <label for="form-document-number">Document Number</label>
+                        <input type="text" id="form-document-number" name="documentNumber" required />
+                        <p id="document-number-error" class="text-red-500 hidden"></p>
+                    </div>
+                    <div>
+                        <label for="form-issuance-date">Date of Issuance</label>
+                        <input type="date" id="form-issuance-date" name="issuanceDate" required />
+                        <p id="issuance-date-error" class="text-red-500 hidden"></p>
+                    </div>
+                    <div>
+                        <label for="form-expiration-date">Date of Expiration</label>
+                        <input type="date" id="form-expiration-date" name="expirationDate" required />
+                        <p id="expiration-date-error" class="text-red-500 hidden"></p>
+                    </div>
+                    <div class="grid-span-2">
+                         <p id="date-order-error" class="text-red-500 hidden"></p>
+                    </div>
+                    <div class="grid-span-2">
+                        <label for="form-upload-document">Upload Document:</label>
+                        <input type="file" id="form-upload-document" name="uploadDocument" />
+                        <p id="current-attachment" style="font-size: 0.8rem; font-style: italic; margin-top: 0.25rem;"></p>
+                    </div>
+                    <div class="grid-span-2">
+                        <label for="form-location">Office Location</label>
+                        <select id="form-location" name="formLocation" required>
+                            <option value="">Select a location</option>
+                        </select>
+                        <p id="location-error" class="text-red-500 hidden"></p>
+                    </div>
+                    <div class="flex-justify-between">
+                        <button type="button" id="cancelDocumentBtn">Cancel</button>
+                        <button type="submit" id="saveDocumentBtn">Add Document</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="renewModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="renew-modal-title">
+        <div class="modal-content">
+             <button id="closeRenewModalBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+            <h2 id="renew-modal-title" class="modal-title">Renew a Document</h2>
+            <div>
+                <label for="renew-doc-select">Select a document to renew:</label>
+                <select id="renew-doc-select">
+                    <option value="">--Please choose an option--</option>
+                </select>
+                <p id="renew-location-info" style="font-size: 0.8rem; font-style: italic; margin-top: 0.25rem;"></p>
+            </div>
+            <div class="flex-justify-between" style="margin-top: 1.5rem;">
+                <button type="button" id="renew-cancel">Cancel</button>
+                <button type="button" id="renew-confirm">Renew Selected</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const LOCAL_STORAGE_KEY_DOCUMENTS = 'govDocsRepository_documents_v3';
+            const LOCAL_STORAGE_KEY_ARCHIVES = 'govDocsRepository_archives_v3';
+            const LOCAL_STORAGE_KEY_LOCATIONS = 'govDocsRepository_locations_v3';
+            const LOCAL_STORAGE_KEY_THEME = 'govDocsRepository_theme';
+            const LOCAL_STORAGE_KEY_ARCHIVE_VISIBILITY = 'govDocsRepository_archive_visibility';
+
+
+            let documents = [];
+            let archivedDocuments = [];
+            let locations = [];
+            let currentArchivedSortKey = null;
+            let currentArchivedSortDirection = 'asc';
+
+            const PREDEFINED_LOCATIONS = [
+                { id: 'paranaque', name: 'Paranaque' },
+                { id: 'laguna', name: 'Laguna' },
+                { id: 'dumaguete', name: 'Dumaguete' },
+                { id: 'bgc', name: 'BGC' },
+            ];
+            
+            // --- DOM Elements ---
+            const globalNotificationDiv = document.getElementById('globalNotification');
+            const notificationMessageSpan = document.getElementById('notificationMessage');
+            const locationSelect = document.getElementById('location-select');
+            const addDocumentBtn = document.getElementById('addDocumentBtn');
+            const renewDocumentBtn = document.getElementById('renewDocumentBtn');
+            const filterInputs = document.querySelectorAll('input[name="documentFilter"]');
+            const filterAgencyNameInput = document.getElementById('filter-agency-name');
+            const filterDocumentNameInput = document.getElementById('filter-document-name');
+            const notificationsList = document.getElementById('notificationsList');
+            const documentsTableBody = document.getElementById('documentsTableBody');
+            const documentsTableFoot = document.getElementById('documentsTableFoot');
+            const archivedTableFoot = document.getElementById('archivedTableFoot');
+            const documentModal = document.getElementById('documentModal');
+            const modalTitle = document.getElementById('modal-title');
+            const documentForm = document.getElementById('documentForm');
+            const saveDocumentBtn = document.getElementById('saveDocumentBtn');
+            const cancelDocumentBtn = document.getElementById('cancelDocumentBtn');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const currentAttachmentP = document.getElementById('current-attachment');
+            const renewModal = document.getElementById('renewModal');
+            const closeRenewModalBtn = document.getElementById('closeRenewModalBtn');
+            const renewDocSelect = document.getElementById('renew-doc-select');
+            const renewLocationInfo = document.getElementById('renew-location-info');
+            const renewConfirmBtn = document.getElementById('renew-confirm');
+            const renewCancelBtn = document.getElementById('renew-cancel');
+            const themeSwitcher = document.getElementById('theme-switcher');
+            const sunIcon = document.getElementById('sun-icon');
+            const moonIcon = document.getElementById('moon-icon');
+            const toggleArchivedTableBtn = document.getElementById('toggleArchivedTableBtn');
+            const archivedTableContainer = document.getElementById('archivedTableContainer');
+            const filterArchivedAgencyInput = document.getElementById('filter-archived-agency');
+            const filterArchivedDocumentInput = document.getElementById('filter-archived-document');
+            
+            const formErrorElements = {
+                'agency-name': document.getElementById('agency-name-error'),
+                'document-name': document.getElementById('document-name-error'),
+                'document-number': document.getElementById('document-number-error'),
+                'issuance-date': document.getElementById('issuance-date-error'),
+                'expiration-date': document.getElementById('expiration-date-error'),
+                'date-order': document.getElementById('date-order-error'),
+                'location': document.getElementById('location-error')
+            };
+
+            const archivedDocumentsTable = document.getElementById('archivedDocumentsTable');
+            const archivedDocumentsTableBody = document.getElementById('archivedDocumentsTableBody');
+            
+            // --- Helper Functions ---
+            
+            function formatDate(dateInput) {
+                if (!dateInput) return 'N/A';
+                const date = new Date(dateInput);
+                const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+                return new Date(date.getTime() + userTimezoneOffset).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            }
+
+            function generateUUID() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+
+            function displayGlobalMessage(message, type = 'error') {
+                notificationMessageSpan.textContent = message;
+                globalNotificationDiv.className = 'error-display active';
+                if (type === 'success') {
+                    globalNotificationDiv.style.backgroundColor = 'var(--color-success-bg)';
+                    globalNotificationDiv.style.borderColor = 'var(--color-success)';
+                    notificationMessageSpan.style.color = 'var(--color-success)';
+                } else {
+                    globalNotificationDiv.style.backgroundColor = 'var(--color-danger-bg)';
+                    globalNotificationDiv.style.borderColor = 'var(--color-danger)';
+                    notificationMessageSpan.style.color = 'var(--color-danger)';
+                }
+                setTimeout(() => globalNotificationDiv.classList.remove('active'), 4000);
+            }
+
+            function saveDataToLocalStorage(key, data) {
+                try {
+                    localStorage.setItem(key, JSON.stringify(data));
+                } catch (e) {
+                    console.error("Error saving to localStorage:", e);
+                    displayGlobalMessage("Failed to save data. Storage might be full.");
+                }
+            }
+
+            function loadDataFromLocalStorage(key) {
+                try {
+                    const data = localStorage.getItem(key);
+                    return data ? JSON.parse(data) : [];
+                } catch (e) {
+                    console.error("Error loading from localStorage:", e);
+                    return [];
+                }
+            }
+            
+            const createTableCell = (content, className = '') => {
+                const cell = document.createElement('td');
+                if (typeof content === 'string') {
+                    cell.textContent = content;
+                } else {
+                    cell.appendChild(content);
+                }
+                if(className) cell.className = className;
+                return cell;
+            };
+            
+            const filterDocuments = (docs, agencyName, docName) => {
+                const agencyFilter = agencyName.toLowerCase().trim();
+                const docNameFilter = docName.toLowerCase().trim();
+                return docs.filter(doc => 
+                    (agencyFilter ? doc.agencyName.toLowerCase().includes(agencyFilter) : true) &&
+                    (docNameFilter ? doc.documentName.toLowerCase().includes(docNameFilter) : true)
+                );
+            };
+
+            function getNotificationStatus(doc) {
+                const today = new Date();
+                today.setHours(0,0,0,0);
+                const expDate = new Date(doc.expirationDate);
+                const userTimezoneOffset = expDate.getTimezoneOffset() * 60000;
+                const localExpDate = new Date(expDate.getTime() + userTimezoneOffset);
+                localExpDate.setHours(0,0,0,0);
+                
+                const diffTime = localExpDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays < 0) return { status: `Expired`, type: 'danger' };
+                if (diffDays <= 90) return { status: `Expires in ${diffDays}d`, type: 'warning' };
+                return { status: 'Active', type: 'success' };
+            }
+
+            function getLocationNameById(locationId) {
+                const location = locations.find(loc => loc.id === locationId);
+                return location ? location.name : 'Unknown';
+            }
+            
+            // --- UI Rendering ---
+
+            function renderMainDocumentsTable() {
+                let docsToDisplay = [...documents];
+                const selectedLocation = locationSelect.value;
+                if (selectedLocation) {
+                    docsToDisplay = docsToDisplay.filter(doc => doc.locationId === selectedLocation);
+                }
+                
+                const selectedFilter = document.querySelector('input[name="documentFilter"]:checked').value;
+                if (selectedFilter !== 'all') {
+                    docsToDisplay = docsToDisplay.filter(doc => {
+                        const statusType = getNotificationStatus(doc).type;
+                        if (selectedFilter === 'non-expiring') return statusType === 'success';
+                        if (selectedFilter === 'expiring') return statusType === 'warning' || statusType === 'danger';
+                        return true;
+                    });
+                }
+                
+                docsToDisplay = filterDocuments(docsToDisplay, filterAgencyNameInput.value, filterDocumentNameInput.value);
+                
+                documentsTableBody.innerHTML = '';
+                documentsTableFoot.classList.toggle('hidden', docsToDisplay.length > 0);
+
+                docsToDisplay.forEach(doc => {
+                    const row = documentsTableBody.insertRow();
+                    const status = getNotificationStatus(doc);
+                    
+                    const statusSpan = document.createElement('span');
+                    statusSpan.className = `status-span ${status.type}`;
+                    statusSpan.textContent = status.status;
+
+                    const actionsCell = document.createElement('div');
+                    actionsCell.className = 'actions-cell';
+                    if (doc.attachmentData) {
+                        actionsCell.innerHTML += `<span class="attachment-indicator" title="${doc.attachmentName}">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:1.2rem; height:1.2rem;"><path stroke-linecap="round" stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.122 2.122l7.81-7.81"></path></svg>
+                        </span>
+                        <button data-id="${doc.id}" class="action-button download-btn" title="Download attachment">
+                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                        </button>`;
+                    }
+                    actionsCell.innerHTML += `
+                        <button data-id="${doc.id}" class="action-button edit-button-icon" title="Edit document">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" /></svg>
+                        </button>
+                        <button data-id="${doc.id}" class="action-button delete-button-icon" title="Archive document">
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m4.5-6.75v6.75m-9-6.75v6.75M9 7.5l.375 1.625M15 7.5l-.375 1.625m-8.5 0H16.5" /></svg>
+                        </button>`;
+                    
+                    row.appendChild(createTableCell(doc.agencyName));
+                    row.appendChild(createTableCell(doc.documentName));
+                    row.appendChild(createTableCell(doc.documentNumber));
+                    row.appendChild(createTableCell(formatDate(doc.issuanceDate)));
+                    row.appendChild(createTableCell(formatDate(doc.expirationDate)));
+                    row.appendChild(createTableCell(getLocationNameById(doc.locationId)));
+                    row.appendChild(createTableCell(statusSpan));
+                    row.appendChild(createTableCell(actionsCell));
+                });
+            }
+            
+            function sortArchivedDocuments(key) {
+                if (currentArchivedSortKey === key) {
+                    currentArchivedSortDirection = currentArchivedSortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentArchivedSortKey = key;
+                    currentArchivedSortDirection = 'asc';
+                }
+
+                archivedDocuments.sort((a, b) => {
+                    let aVal = a[key];
+                    let bVal = b[key];
+
+                    if (key.includes('Date') || key === 'archivedAt') {
+                        aVal = new Date(aVal);
+                        bVal = new Date(bVal);
+                    }
+
+                    if (typeof aVal === 'string' && typeof bVal === 'string') {
+                         return currentArchivedSortDirection === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+                    } else if (aVal < bVal) {
+                        return currentArchivedSortDirection === 'asc' ? -1 : 1;
+                    } else if (aVal > bVal) {
+                        return currentArchivedSortDirection === 'asc' ? 1 : -1;
+                    }
+                    return 0;
+                });
+
+                renderArchivedDocumentsTable();
+            }
+
+            function renderArchivedDocumentsTable() {
+                const agencyFilter = filterArchivedAgencyInput.value;
+                const docNameFilter = filterArchivedDocumentInput.value;
+                const filteredArchived = filterDocuments(archivedDocuments, agencyFilter, docNameFilter);
+                
+                archivedTableFoot.classList.toggle('hidden', filteredArchived.length > 0);
+                archivedDocumentsTableBody.innerHTML = '';
+                
+                // Update sort icons on headers
+                archivedDocumentsTable.querySelectorAll('.sort-header').forEach(header => {
+                    header.classList.remove('sort-asc', 'sort-desc');
+                    if (header.dataset.sortKey === currentArchivedSortKey) {
+                        header.classList.add(`sort-${currentArchivedSortDirection}`);
+                    }
+                });
+
+                filteredArchived.forEach(doc => {
+                    const row = archivedDocumentsTableBody.insertRow();
+                    
+                    const actionsCell = document.createElement('div');
+                    actionsCell.className = 'actions-cell';
+                    if (doc.attachmentData) {
+                        actionsCell.innerHTML += `<button data-id="${doc.id}" class="action-button download-btn" title="Download attachment">
+                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                        </button>`;
+                    } else {
+                        actionsCell.innerHTML += '<span>N/A</span>';
+                    }
+
+                    row.appendChild(createTableCell(doc.agencyName));
+                    row.appendChild(createTableCell(doc.documentName));
+                    row.appendChild(createTableCell(doc.documentNumber));
+                    row.appendChild(createTableCell(formatDate(doc.issuanceDate)));
+                    row.appendChild(createTableCell(formatDate(doc.expirationDate)));
+                    row.appendChild(createTableCell(getLocationNameById(doc.locationId)));
+                    row.appendChild(createTableCell(formatDate(doc.archivedAt)));
+                    row.appendChild(createTableCell(actionsCell));
+                });
+            }
+
+            function renderNotifications() {
+                notificationsList.innerHTML = '';
+                const expiringDocs = documents
+                    .map(doc => ({...doc, status: getNotificationStatus(doc)}))
+                    .filter(doc => doc.status.type === 'warning' || doc.status.type === 'danger')
+                    .sort((a, b) => new Date(a.expirationDate) - new Date(b.expirationDate));
+
+                if (expiringDocs.length === 0) {
+                    notificationsList.innerHTML = '<li>All documents are up-to-date.</li>';
+                    return;
+                }
+                
+                expiringDocs.forEach(doc => {
+                    const li = document.createElement('li');
+                    const className = doc.status.type === 'danger' ? 'text-red-700' : 'text-custom-green-teal';
+                    li.innerHTML = `<span class="${className}"><strong>${doc.documentName}</strong> (${getLocationNameById(doc.locationId)}) ${doc.status.type === 'danger' ? 'has expired' : 'is expiring soon'}.</span>`;
+                    notificationsList.appendChild(li);
+                });
+            }
+
+            function updateUI() {
+                renderLocations();
+                renderMainDocumentsTable();
+                renderArchivedDocumentsTable();
+                renderNotifications();
+            }
+
+            function renderLocations() {
+                const formLocationSelect = document.getElementById('form-location');
+                const selectedVal = locationSelect.value;
+                locationSelect.innerHTML = '<option value="">All Locations</option>';
+                formLocationSelect.innerHTML = '<option value="">Select a location</option>';
+                locations.forEach(loc => {
+                    const option = new Option(loc.name, loc.id);
+                    locationSelect.add(option.cloneNode(true));
+                    formLocationSelect.add(option);
+                });
+                locationSelect.value = selectedVal;
+            }
+
+            function openDocumentModal(docToEdit = null) {
+                documentForm.reset();
+                Object.values(formErrorElements).forEach(el => el.classList.add('hidden'));
+                
+                if (docToEdit) {
+                    modalTitle.textContent = 'Edit Document';
+                    saveDocumentBtn.textContent = 'Save Changes';
+                    document.getElementById('form-document-id').value = docToEdit.id;
+                    document.getElementById('form-agency-name').value = docToEdit.agencyName;
+                    document.getElementById('form-document-name').value = docToEdit.documentName;
+                    document.getElementById('form-document-number').value = docToEdit.documentNumber;
+                    document.getElementById('form-issuance-date').value = docToEdit.issuanceDate;
+                    document.getElementById('form-expiration-date').value = docToEdit.expirationDate;
+                    document.getElementById('form-location').value = docToEdit.locationId;
+                    document.getElementById('form-attachment-data').value = docToEdit.attachmentData || '';
+                    document.getElementById('form-attachment-name').value = docToEdit.attachmentName || '';
+                    currentAttachmentP.textContent = docToEdit.attachmentName ? `Current: ${docToEdit.attachmentName}` : 'No file attached.';
+                } else {
+                    modalTitle.textContent = 'Add New Document';
+                    saveDocumentBtn.textContent = 'Add Document';
+                    currentAttachmentP.textContent = 'No file attached.';
+                }
+
+                documentModal.classList.add('active');
+                document.getElementById('form-agency-name').focus();
+            }
+
+            function closeDocumentModal() {
+                documentModal.classList.remove('active');
+            }
+            
+            function openRenewModal() {
+                const selectedLocation = locationSelect.value;
+                const locationName = selectedLocation ? getLocationNameById(selectedLocation) : "All Locations";
+                renewLocationInfo.textContent = `Showing documents for: ${locationName}`;
+                
+                const docsForRenewal = documents.filter(doc => !selectedLocation || doc.locationId === selectedLocation);
+                
+                renewDocSelect.innerHTML = '<option value="">--Please choose a document--</option>';
+                if (docsForRenewal.length === 0) {
+                     renewDocSelect.innerHTML = '<option value="" disabled>No documents in this location</option>';
+                } else {
+                    docsForRenewal.forEach(doc => {
+                        renewDocSelect.add(new Option(`${doc.documentName} (${doc.agencyName})`, doc.id));
+                    });
+                }
+                renewModal.classList.add('active');
+            }
+            
+            function closeRenewModal() {
+                renewModal.classList.remove('active');
+            }
+
+            function validateForm() {
+                let isValid = true;
+                Object.values(formErrorElements).forEach(el => el.classList.add('hidden'));
+                const fieldsToValidate = {
+                    'agency-name': 'Government Agency', 'document-name': 'Document Name',
+                    'document-number': 'Document Number', 'issuance-date': 'Date of Issuance',
+                    'expiration-date': 'Date of Expiration', 'location': 'Office Location'
+                };
+
+                for (const id in fieldsToValidate) {
+                    const input = document.getElementById(`form-${id}`);
+                    if (!input.value.trim()) {
+                        formErrorElements[id].textContent = `${fieldsToValidate[id]} is required.`;
+                        formErrorElements[id].classList.remove('hidden');
+                        isValid = false;
+                    }
+                }
+                
+                const issueDate = document.getElementById('form-issuance-date').value;
+                const expiryDate = document.getElementById('form-expiration-date').value;
+                if (issueDate && expiryDate && new Date(issueDate) >= new Date(expiryDate)) {
+                    formErrorElements['date-order'].textContent = 'Expiration Date must be after Issuance Date.';
+                    formErrorElements['date-order'].classList.remove('hidden');
+                    isValid = false;
+                }
+                return isValid;
+            }
+            
+            function handleSaveDocument(e) {
+                e.preventDefault();
+                if (!validateForm()) return;
+                
+                const docId = document.getElementById('form-document-id').value;
+                const fileInput = document.getElementById('form-upload-document');
+                const file = fileInput.files[0];
+                
+                const processAndSave = (attachmentData, attachmentName) => {
+                    const docData = {
+                        id: docId || generateUUID(),
+                        agencyName: document.getElementById('form-agency-name').value.trim(),
+                        documentName: document.getElementById('form-document-name').value.trim(),
+                        documentNumber: document.getElementById('form-document-number').value.trim(),
+                        issuanceDate: document.getElementById('form-issuance-date').value,
+                        expirationDate: document.getElementById('form-expiration-date').value,
+                        locationId: document.getElementById('form-location').value,
+                        attachmentData: attachmentData,
+                        attachmentName: attachmentName,
+                    };
+                    
+                    const existingIndex = documents.findIndex(d => d.id === docData.id);
+                    if (existingIndex > -1) {
+                        documents[existingIndex] = docData;
+                    } else {
+                        documents.push(docData);
+                    }
+                    
+                    saveDataToLocalStorage(LOCAL_STORAGE_KEY_DOCUMENTS, documents);
+                    displayGlobalMessage(docId ? 'Document updated successfully!' : 'Document added successfully!', 'success');
+                    updateUI();
+                    closeDocumentModal();
+                };
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => processAndSave(event.target.result, file.name);
+                    reader.onerror = () => displayGlobalMessage('Error reading file.');
+                    reader.readAsDataURL(file);
+                } else {
+                    const existingAttachmentData = document.getElementById('form-attachment-data').value;
+                    const existingAttachmentName = document.getElementById('form-attachment-name').value;
+                    processAndSave(existingAttachmentData, existingAttachmentName);
+                }
+            }
+
+            function archiveDocument(docId) {
+                const docIndex = documents.findIndex(doc => doc.id === docId);
+                if (docIndex > -1) {
+                    const [deletedDoc] = documents.splice(docIndex, 1);
+                    archivedDocuments.unshift({ ...deletedDoc, archivedAt: new Date().toISOString(), status: 'Archived' });
+                    saveDataToLocalStorage(LOCAL_STORAGE_KEY_DOCUMENTS, documents);
+                    saveDataToLocalStorage(LOCAL_STORAGE_KEY_ARCHIVES, archivedDocuments);
+                    displayGlobalMessage('Document archived successfully!', 'success');
+                    updateUI();
+                }
+            }
+
+            function downloadAttachment(docId) {
+                const doc = documents.find(d => d.id === docId) || archivedDocuments.find(d => d.id === docId);
+                if (doc && doc.attachmentData) {
+                    const link = document.createElement('a');
+                    link.href = doc.attachmentData;
+                    link.download = doc.attachmentName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    displayGlobalMessage('Attachment not found.');
+                }
+            }
+
+            function toggleTheme() {
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                const newTheme = isDark ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem(LOCAL_STORAGE_KEY_THEME, newTheme);
+                updateThemeIcons(newTheme);
+                updateButtonLabel(newTheme);
+            }
+
+            function updateThemeIcons(theme) {
+                if (theme === 'dark') {
+                    moonIcon.classList.remove('hidden');
+                    sunIcon.classList.add('hidden');
+                } else {
+                    moonIcon.classList.add('hidden');
+                    sunIcon.classList.remove('hidden');
+                }
+            }
+
+            function updateButtonLabel(theme) {
+                const themeLabel = document.querySelector('.theme-label');
+                const themeSwitcher = document.getElementById('theme-switcher');
+                if (theme === 'dark') {
+                    themeLabel.textContent = 'Switch to Light Mode';
+                    themeSwitcher.setAttribute('aria-label', 'Switch to light mode');
+                } else {
+                    themeLabel.textContent = 'Switch to Dark Mode';
+                    themeSwitcher.setAttribute('aria-label', 'Switch to dark mode');
+                }
+            }
+            
+            function initializeApp() {
+                locations = loadDataFromLocalStorage(LOCAL_STORAGE_KEY_LOCATIONS);
+                if (locations.length === 0) {
+                    locations = PREDEFINED_LOCATIONS;
+                    saveDataToLocalStorage(LOCAL_STORAGE_KEY_LOCATIONS, locations);
+                }
+                documents = loadDataFromLocalStorage(LOCAL_STORAGE_KEY_DOCUMENTS);
+                archivedDocuments = loadDataFromLocalStorage(LOCAL_STORAGE_KEY_ARCHIVES);
+                
+                const savedTheme = localStorage.getItem(LOCAL_STORAGE_KEY_THEME) || 'light';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                updateThemeIcons(savedTheme);
+                updateButtonLabel(savedTheme);
+
+                const isArchivedVisible = localStorage.getItem(LOCAL_STORAGE_KEY_ARCHIVE_VISIBILITY) !== 'false';
+                if (!isArchivedVisible) {
+                    archivedTableContainer.parentElement.classList.add('hidden');
+                }
+
+                updateUI();
+            }
+
+            // --- Event Listeners ---
+            
+            [locationSelect, ...filterInputs].forEach(el => el.addEventListener('change', renderMainDocumentsTable));
+            [filterAgencyNameInput, filterDocumentNameInput].forEach(el => el.addEventListener('input', renderMainDocumentsTable));
+            [filterArchivedAgencyInput, filterArchivedDocumentInput].forEach(el => el.addEventListener('input', renderArchivedDocumentsTable));
+            
+            addDocumentBtn.addEventListener('click', () => openDocumentModal());
+            renewDocumentBtn.addEventListener('click', openRenewModal);
+            
+            documentForm.addEventListener('submit', handleSaveDocument);
+            cancelDocumentBtn.addEventListener('click', closeDocumentModal);
+            closeModalBtn.addEventListener('click', closeDocumentModal);
+            documentModal.addEventListener('click', e => e.target === documentModal && closeDocumentModal());
+            
+            renewConfirmBtn.addEventListener('click', () => {
+                const selectedDocId = renewDocSelect.value;
+                if (!selectedDocId) {
+                    alert('Please select a document to renew.');
+                    return;
+                }
+                const docToRenew = documents.find(d => d.id === selectedDocId);
+                if (docToRenew) {
+                    archiveDocument(selectedDocId);
+                    closeRenewModal();
+                    openDocumentModal({
+                        ...docToRenew,
+                        id: '', documentNumber: '', issuanceDate: '', expirationDate: '',
+                        attachmentData: null, attachmentName: ''
+                    });
+                }
+            });
+            renewCancelBtn.addEventListener('click', closeRenewModal);
+            closeRenewModalBtn.addEventListener('click', closeRenewModal);
+            renewModal.addEventListener('click', e => e.target === renewModal && closeRenewModal());
+            
+            documentsTableBody.addEventListener('click', e => {
+                const button = e.target.closest('button');
+                if (!button) return;
+                const docId = button.dataset.id;
+                
+                if (button.classList.contains('delete-button-icon')) {
+                    if (confirm('Are you sure you want to archive this document?')) archiveDocument(docId);
+                } else if (button.classList.contains('edit-button-icon')) {
+                    const docToEdit = documents.find(d => d.id === docId);
+                    if (docToEdit) openDocumentModal(docToEdit);
+                } else if (button.classList.contains('download-btn')) {
+                    downloadAttachment(docId);
+                }
+            });
+
+             archivedDocumentsTableBody.addEventListener('click', e => {
+                const button = e.target.closest('button');
+                if (!button) return;
+                const docId = button.dataset.id;
+                if (button.classList.contains('download-btn')) {
+                    downloadAttachment(docId);
+                }
+            });
+            
+            archivedDocumentsTable.querySelector('thead').addEventListener('click', e => {
+                const header = e.target.closest('th');
+                if (header && header.dataset.sortKey) {
+                    sortArchivedDocuments(header.dataset.sortKey);
+                }
+            });
+
+            themeSwitcher.addEventListener('click', toggleTheme);
+            
+            toggleArchivedTableBtn.addEventListener('click', () => {
+                const container = archivedTableContainer.parentElement;
+                const isHidden = container.classList.toggle('hidden');
+                localStorage.setItem(LOCAL_STORAGE_KEY_ARCHIVE_VISIBILITY, !isHidden);
+            });
+
+            initializeApp();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facilities Management Group Government Compliance Repository</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="logo-fmg">Facilities Management Group</div>
+        <button id="theme-switcher" class="theme-switcher" aria-label="Toggle dark mode">
+            <div class="icon-wrapper">
+                <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.95-4.243-1.59-1.59M3 12h2.25m.386-6.364 1.59 1.591M12 12a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z" />
+                </svg>
+                <svg id="moon-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25c0 5.385 4.365 9.75 9.75 9.75 2.572 0 4.92-.99 6.697-2.648Z" />
+                </svg>
+            </div>
+            <span class="theme-label">Toggle dark mode</span>
+        </button>
+        
+        <header class="header-title-wrapper">
+            <h1>Government Compliance Repository</h1>
+        </header>
+
+        <div id="globalNotification" class="error-display" role="alert">
+            <p id="notificationMessage"></p>
+        </div>
+
+        <section class="notifications-panel">
+            <h2>Important Notifications</h2>
+            <ul id="notificationsList" aria-live="polite"></ul>
+        </section>
+
+        <section class="documents-section compliance-dashboard">
+            <div class="section-header">
+                <h2>Compliance Status Dashboard</h2>
+                <button id="generateFullReportBtn" aria-label="Generate Full Compliance Report">Generate Full Report</button>
+            </div>
+            <div class="dashboard-grid">
+                <div class="donut-chart-container">
+                    <div class="donut-chart" id="overall-donut-chart">
+                        <div class="donut-chart-center">
+                            <span id="donut-chart-percent">0%</span>
+                            <span id="donut-chart-label">Overall Compliance</span>
+                        </div>
+                    </div>
+                    <div id="donut-chart-ratio" class="donut-chart-ratio">0 / 0 docs</div>
+                </div>
+                <div class="location-grid-container">
+                    <div class="sorting-controls" id="location-sorting-controls">
+                        <span>Sort by:</span>
+                        <button data-sort-by="compliance_desc" class="active">Compliance ↓</button>
+                        <button data-sort-by="compliance_asc">Compliance ↑</button>
+                        <button data-sort-by="name_asc">Name A-Z</button>
+                    </div>
+                    <div class="location-progress-bars">
+                        </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="documents-section" id="manage-documents-section">
+            <div class="section-header">
+                <h2>Manage Documents</h2>
+            </div>
+            <div class="location-add-section">
+                <div class="location-selector">
+                    <label for="location-select">Filter by Office Location</label>
+                    <select id="location-select" aria-label="Select Office Location">
+                        <option value="">All Locations</option>
+                    </select>
+                </div>
+                <div class="action-buttons-group">
+                     <button id="renewDocumentBtn" aria-label="Renew Existing Document">Renew Document</button>
+                     <button id="addDocumentBtn" aria-label="Add New Document">Add New Document</button>
+                </div>
+            </div>
+
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label><input type="radio" name="documentFilter" value="all" id="filter-all" checked> Show All</label>
+                    <label><input type="radio" name="documentFilter" value="non-expiring" id="filter-non-expiring"> Active</label>
+                    <label><input type="radio" name="documentFilter" value="expiring" id="filter-expiring"> Expiring/Expired</label>
+                </div>
+                <div class="text-filter-group">
+                    <input type="text" id="filter-agency-name" placeholder="Filter by Agency..." />
+                    <input type="text" id="filter-document-name" placeholder="Filter by Document..." />
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table id="documentsTable" class="documents-table">
+                    <thead>
+                        <tr>
+                            <th class="sort-header" data-sort-key="agencyName">Agency<span class="sort-icon"></span></th>
+                            <th class="sort-header" data-sort-key="documentName">Document Name<span class="sort-icon"></span></th>
+                            <th class="sort-header" data-sort-key="documentNumber">Doc Number<span class="sort-icon"></span></th>
+                            <th class="sort-header" data-sort-key="issuanceDate">Issued<span class="sort-icon"></span></th>
+                            <th class="sort-header" data-sort-key="expirationDate">Expires<span class="sort-icon"></span></th>
+                            <th class="sort-header" data-sort-key="locationId">Location<span class="sort-icon"></span></th>
+                            <th class="sort-header" data-sort-key="entityName">Entity Name<span class="sort-icon"></span></th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="documentsTableBody"></tbody>
+                    <tfoot id="documentsTableFoot" class="hidden">
+                        <tr>
+                           <td colspan="9" style="text-align: center; padding: 2rem;">No documents match the current filters.</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+
+        <section class="documents-section">
+            <div class="section-header">
+                  <h2>Archived Documents</h2>
+                  <button id="toggleArchivedTableBtn" class="toggle-button">Show/Hide</button>
+            </div>
+            <div id="archived-table-content" class="hidden"> <div class="filter-controls">
+                    <div class="filter-group">
+                        <label for="filter-archived-location">Location:</label>
+                        <select id="filter-archived-location" aria-label="Filter archived by location">
+                            <option value="">All Locations</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filter-archived-year">Year:</label>
+                        <select id="filter-archived-year" aria-label="Filter archived by year">
+                            <option value="">All Years</option>
+                        </select>
+                    </div>
+                    <div class="text-filter-group"> <input type="text" id="filter-archived-agency" placeholder="Filter by Agency..." />
+                        <input type="text" id="filter-archived-document" placeholder="Filter by Document..." />
+                    </div>
+                </div>
+                <div class="table-container" id="archivedTableContainer">
+                    <table id="archivedDocumentsTable" class="documents-table">
+                        <thead>
+                            <tr>
+                                <th class="sort-header" data-sort-key="agencyName">Agency<span class="sort-icon"></span></th>
+                                <th class="sort-header" data-sort-key="documentName">Document Name<span class="sort-icon"></span></th>
+                                <th class="sort-header" data-sort-key="documentNumber">Doc Number<span class="sort-icon"></span></th>
+                                <th class="sort-header" data-sort-key="issuanceDate">Issued<span class="sort-icon"></span></th>
+                                <th class="sort-header" data-sort-key="expirationDate">Expiration Date<span class="sort-icon"></span></th>
+                                <th class="sort-header" data-sort-key="locationId">Location<span class="sort-icon"></span></th>
+                                <th class="sort-header" data-sort-key="entityName">Entity Name<span class="sort-icon"></span></th>
+                                <th class="sort-header" data-sort-key="archivedAt">Archived At<span class="sort-icon"></span></th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="archivedDocumentsTableBody"></tbody>
+                         <tfoot id="archivedTableFoot" class="hidden">
+                            <tr>
+                                <td colspan="9" style="text-align: center; padding: 2rem;">No archived documents match the current filters.</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="documents-section collapsible-panel">
+            <div class="section-header" id="aboutPanelHeader" aria-expanded="false" aria-controls="aboutPanelContent" role="button" tabindex="0">
+                <h2>About / Version Info</h2>
+                <button id="toggleAboutPanelBtn" class="toggle-button" aria-label="Toggle About Panel">
+                    <span>Show/Hide</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+            </div>
+            <div id="aboutPanelContent" class="collapsible-content"> <table class="timeline-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: right;">Version / Date</th>
+                            <th></th> <th style="text-align: left;">Changes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+						<tr>
+                            <td class="timeline-date-cell"><strong>v19.0</strong><br>Aug 24, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Redesigned the Compliance Status Dashboard. Replaced the 'Overall Compliance' progress bar with a large, dynamic donut chart and rearranged the location-specific progress bars into a clean 2x2 grid for a more modern and readable layout.</td>
+                        </tr>
+						<tr>
+                            <td class="timeline-date-cell"><strong>v18.9.2</strong><br>Aug 24, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Fixed a UI bug where modals opened from the 'Action For' notification pop-up would appear behind it. The newly opened modal now correctly appears on top.</td>
+                        </tr>
+						<tr>
+                            <td class="timeline-date-cell"><strong>v18.9.1</strong><br>Aug 24, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Refined the notification workflow. The 'Action For' modal now remains open in the background, allowing users to perform multiple actions (like viewing status and then renewing) without having to re-click the original notification.</td>
+                        </tr>
+						<tr>
+                            <td class="timeline-date-cell"><strong>v18.9</strong><br>Aug 24, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Made notifications in the dashboard interactive. Clicking a notification now opens a pop-up modal with direct shortcuts to either 'View Renewal Status' or 'Renew Document Now'.</td>
+                        </tr>
+						<tr>
+                            <td class="timeline-date-cell"><strong>v18.8</strong><br>Aug 23, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Refined the UI of the 'Renewal Status Log' modal. The form for adding new entries now uses a cleaner, stacked layout with improved styling and a larger, non-resizable comment box for better usability.</td>
+                        </tr>
+						<tr>
+                            <td class="timeline-date-cell"><strong>v18.7</strong><br>Aug 23, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Enhanced the Archived Documents table. A 'View Log' button now appears for archived documents that have a comment history, opening a read-only view of their renewal status log.</td>
+                        </tr>
+						<tr>
+                            <td class="timeline-date-cell"><strong>v18.6</strong><br>Aug 23, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Added a Renewal Status Log feature. A prominent 'Renewal Status' button now appears under the agency name for expiring/expired documents, opening a dedicated modal to track renewal progress with timestamped comments.</td>
+                        </tr>
+						<tr>
+                            <td class="timeline-date-cell"><strong>v18.5</strong><br>Aug 23, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Updated the Compliance Details modal to a wider, two-column landscape view on larger screens for better visibility, while retaining a stacked view on mobile for responsiveness.</td>
+                        </tr>
+						<tr>
+                            <td class="timeline-date-cell"><strong>v18.4</strong><br>Aug 23, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Implemented a reporting feature. A global button generates a consolidated A4 PDF report for all locations, and a button within the details modal generates a report for a single location.</td>
+                        </tr>
+						<tr>
+                            <td class="timeline-date-cell"><strong>v18.3</strong><br>Aug 23, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Added informative tooltips to the Compliance Dashboard. Hovering over a location's progress bar now displays a quick summary of compliant, lacking, expired, and expiring documents.</td>
+                        </tr>
+						<tr>
+                            <td class="timeline-date-cell"><strong>v18.2</strong><br>Aug 23, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Added sorting controls to the Compliance Dashboard, allowing location progress bars to be ordered by compliance percentage or alphabetically by name.</td>
+                        </tr>
+						<tr>
+                            <td class="timeline-date-cell"><strong>v18.1</strong><br>Aug 23, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Enhanced the Compliance Dashboard with dynamic, color-coded progress bars (red, yellow, green) to provide an at-a-glance status of each location's compliance level.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v18.0</strong><br>Aug 22, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Transformed the Compliance Details modal into an interactive control panel. Documents listed are now clickable shortcuts to find, add, or renew items, streamlining the compliance workflow.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v17.0.2</strong><br>Aug 22, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Refined the theme switcher button by using clearer sun/moon icons and shortening the text to "Light Mode" and "Dark Mode".</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v17.0.1</strong><br>Aug 22, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Modified the Compliance Dashboard progress bars to display the percentage text in a static position, preventing it from being hidden at low compliance levels.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v17.0</strong><br>Aug 22, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Implemented a "Smart" Compliance Dashboard. Progress bars now track compliance against a master list of required documents. Added a clickable pop-up modal to show detailed lists of compliant and lacking documents for each location.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v16.0</strong><br>Aug 22, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Added a new Compliance Status Dashboard section with dynamic progress bars for overall and location-specific compliance rates.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v15.8</strong><br>Aug 22, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Implemented a file size limit of 1.2 MB for attachments to prevent errors with `localStorage` and preview functionality. The app now displays a clear error message if a user attempts to upload a file that is too large.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v15.7</strong><br>Aug 22, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Fixed a bug in the "Renew Document" modal that incorrectly disabled the Document Number, Issuance/Expiration Dates, and attachment fields, preventing renewals. These fields are now editable as intended.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v15.6.3</strong><br>Aug 22, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Further increased logo font size for better visual balance with the theme switcher button.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v15.6.2</strong><br>Aug 22, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Aligned the Theme Switcher to the page edge and adjusted the main logo's vertical position to match.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v15.6.1</strong><br>Aug 22, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Increased the font size of the main logo for better visibility and visual balance.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v15.6</strong><br>Aug 22, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Centered the "Facilities Management Group" logo text on the main page while maintaining vertical alignment with the theme switcher.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v15.5 (Current Baseline)</strong><br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Reverted application to v15.5 as the new baseline and removed newer version history.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v15.5</strong><br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Simplified tooltips for active Edit/Delete buttons to "Edit Document" and "Delete Document".</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v15.4</strong><br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Restored specific tooltips for active Edit/Delete buttons while retaining disabled tooltips.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v15.3</strong><br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Modified tooltip for disabled action buttons to a concise "Disabled: Document is expiring/expired".</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v15.2</strong><br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Increased table text size in all tables (Manage, Archived, About/Version Info) for improved legibility.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v15.1</strong><br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Adjusted table text sizes, unified archived document filter layout, and set archived/about sections to be hidden by default.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v15.0</strong><br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Implemented renewal date validation, attachment preview with zoom & download, archived document filters (location, year), wider layout, and table scrolling.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v14.0.4</strong><br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Adjusted z-index of timeline table headers to prevent timeline dots from clipping through them when scrolling.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v14.0.3</strong><br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Fixed clipping issue in About / Version Info section by adding a solid background to sticky table headers. This also makes the scrollbar visually apply only to the changelog information.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v14.0.2</strong><br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Added scroll functionality to the About / Version Info panel for better viewing of changelog.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v14.0.1</strong><br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Modified "About / Version Info" toggle button to include "Show/Hide" text and refined its internal layout to align with "Archived Documents" toggle button styling.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell"><strong>v14.0</strong><br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Renamed file to v14.0 and updated version info.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell">v13.0<br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Added About / Version Info collapsible panel with styled changelog.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell">v12.2 (Improvement)<br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Modified "Delete" button behavior from archiving to permanently deleting documents. Updated confirmation pop-up message.</td>
+                        </tr>
+                         <tr>
+                            <td class="timeline-date-cell">v12.2 (Improvement)<br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Changed "Remove" button in Delete Confirmation pop-up to red with white text, and "Cancel" button to black text.</td>
+                        </tr>
+                         <tr>
+                            <td class="timeline-date-cell">v12.2 (Improvement)<br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Implemented conditional document name options and "Other" input field based on "Government Agency" selection.</td>
+                        </tr>
+                        <tr>
+                            <td class="timeline-date-cell">v12.2 (Improvement)<br>Aug 21, 2025</td>
+                            <td class="timeline-middle-cell"><div class="timeline-circle"></div></td>
+                            <td class="timeline-description-cell">Changed "Cancel" button text styling to black in "Delete Attachment" window, applied to Add, Renew, and Edit windows.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <div id="documentModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-content">
+            <button id="closeModalBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+            <h2 id="modal-title" class="modal-title">Add New Document</h2>
+            <form id="documentForm" class="modal-form" novalidate>
+                 <input type="hidden" id="form-document-id" name="id">
+                 <input type="hidden" id="form-attachment-data" name="attachmentData">
+                 <input type="hidden" id="form-attachment-name" name="attachmentName">
+                 <input type="hidden" id="original-expiration-date" name="originalExpirationDate"> <div class="form-grid">
+                    <div class="grid-span-2">
+                        <label for="form-agency-name">Government Agency</label>
+                        <select id="form-agency-name" name="agencyName" required autofocus>
+                            <option value="">Select an Agency</option>
+                            <option value="City Mayor's Office">City Mayor's Office</option>
+                            <option value="City Engineer's Office">City Engineer's Office</option>
+                            <option value="City Health Office">City Health Office</option>
+                            <option value="Barangay Office">Barangay Office</option>
+                            <option value="Bureau of Fire & Protection (BFP)">Bureau of Fire & Protection (BFP)</option>
+                            <option value="Department of Environment & Natural Resources (DENR)">Department of Environment & Natural Resources (DENR)</option>
+                            <option value="Philippine Economic Zone Authority (PEZA)">Philippine Economic Zone Authority (PEZA)</option>
+                            <option value="BFP Central Liaison Unit (BFP-CLU)">BFP Central Liaison Unit (BFP-CLU)</option>
+                            <option value="Department of Labor & Employment (DOLE)">Department of Labor & Employment (DOLE)</option>
+                            <option value="Department of Energy (DOE)">Department of Energy (DOE)</option>
+                            <option value="International Organization for Standardization (ISO)">International Organization for Standardization (ISO)</option>
+                            <option value="Laguna Lake Development Agency (LLDA)">Laguna Lake Development Agency (LLDA)</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" id="form-agency-name-other" name="agencyNameOther" class="hidden" placeholder="Please specify other agency" style="margin-top: 0.5rem;" />
+                        <p id="agency-name-error" class="text-red-500 hidden"></p>
+                    </div>
+                    <div class="grid-span-2">
+                        <label for="form-document-name">Document Name</label>
+                        <select id="form-document-name" name="documentName" required></select>
+                        <input type="text" id="form-document-name-other" name="documentNameOther" class="hidden" placeholder="Please specify other document name" style="margin-top: 0.5rem;" />
+                        <p id="document-name-error" class="text-red-500 hidden"></p>
+                    </div>
+                    <div class="grid-span-2">
+                        <label for="form-document-number">Document Number</label>
+                        <input type="text" id="form-document-number" name="documentNumber" required />
+                        <p id="document-number-error" class="text-red-500 hidden"></p>
+                    </div>
+                    <div>
+                        <label for="form-issuance-date">Date of Issuance</label>
+                        <input type="date" id="form-issuance-date" name="issuanceDate" required />
+                        <p id="issuance-date-error" class="text-red-500 hidden"></p>
+                    </div>
+                    <div>
+                        <label for="form-expiration-date">Date of Expiration</label>
+                        <input type="date" id="form-expiration-date" name="expirationDate" required />
+                        <label><input type="checkbox" id="oneTimeIssuanceCheckbox"> One-Time Issuance</label>
+                        <p id="expiration-date-error" class="text-red-500 hidden"></p>
+                        <p id="renewal-date-error" class="text-red-500 hidden"></p> </div>
+                    <div class="grid-span-2">
+                         <p id="date-order-error" class="text-red-500 hidden"></p>
+                    </div>
+                    <div class="grid-span-2">
+                        <label for="form-upload-document">Upload Document:</label>
+                        <input type="file" id="form-upload-document" name="uploadDocument" />
+                        <p id="current-attachment" style="font-size: 0.8rem; font-style: italic; margin-top: 0.25rem;"></p>
+                        <button type="button" id="deleteAttachmentBtn" class="hidden" title="Remove attached file">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:0.8rem;height:0.8rem;">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 7h12M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-7 0h8m-9 4v6m4-6v6m4-6v6M4 7h16l-1 12a2 2 0 01-2 2H7a2 2 0 01-2-2L4 7z"/>
+                            </svg> Delete Attachment
+                        </button>
+                    </div>
+                    <div class="grid-span-2">
+                        <label for="form-location">Office Location</label>
+                        <select id="form-location" name="formLocation" required>
+                            <option value="">Select a location</option>
+                        </select>
+                        <p id="location-error" class="text-red-500 hidden"></p>
+                    </div>
+                    <div class="grid-span-2">
+                        <label for="form-entity-name">Entity Name</label>
+                        <select id="form-entity-name" name="entityName" required>
+                            <option value="">Select an Entity</option>
+                        </select>
+                        <input type="text" id="form-entity-name-other" name="entityNameOther" class="hidden" placeholder="Please specify other entity" style="margin-top: 0.5rem;" />
+                        <p id="entity-name-error" class="text-red-500 hidden"></p>
+                    </div>
+                    <div class="flex-justify-between">
+                        <button type="button" id="cancelDocumentBtn">Cancel</button>
+                        <button type="submit" id="saveDocumentBtn">Add Document</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="renewModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="renew-modal-title">
+        <div class="modal-content">
+             <button id="closeRenewModalBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+            <h2 id="renew-modal-title" class="modal-title">Renew a Document</h2>
+            <div>
+                <label for="renew-doc-select">Select a document to renew:</label>
+                <select id="renew-doc-select">
+                    <option value="">--Please choose an option--</option>
+                </select>
+                <p id="renew-location-info" style="font-size: 0.8rem; font-style: italic; margin-top: 0.25rem;"></p>
+            </div>
+            <div class="flex-justify-between" style="margin-top: 1.5rem;">
+                <button type="button" id="renew-cancel">Cancel</button>
+                <button type="button" id="renew-confirm" disabled>Renew Selected</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="previewModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="preview-modal-title">
+        <div class="modal-content">
+            <button id="closePreviewModalBtn" class="modal-close-btn" aria-label="Close preview modal">&times;</button>
+            <h2 id="preview-modal-title" class="modal-title">Document Preview</h2>
+            <div id="previewContent">
+                </div>
+            <div id="previewControls">
+                <button id="zoomOutBtn" class="hidden"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:1.2rem;height:1.2rem;"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" /></svg> Zoom Out</button>
+                <button id="zoomInBtn" class="hidden"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:1.2rem;height:1.2rem;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg> Zoom In</button>
+                <button id="downloadPreviewBtn"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:1.2rem;height:1.2rem;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg> Download</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="complianceDetailsModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="compliance-modal-title">
+        <div class="modal-content">
+            <button id="closeComplianceModalBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+            <h2 id="compliance-modal-title" class="modal-title">Compliance Details</h2>
+            <div class="compliance-lists">
+                <div class="compliance-list">
+                    <h3>Compliant Documents</h3>
+                    <ul id="compliant-docs-list"></ul>
+                </div>
+                <div class="compliance-list">
+
+                    <h3>Non-Compliant Documents</h3>
+                    <h4 class="compliance-sub-heading">Lacking</h4>
+                    <ul id="lacking-docs-list"></ul>
+                    <h4 class="compliance-sub-heading">Expired</h4>
+                    <ul id="expired-docs-list"></ul>
+                    <h4 class="compliance-sub-heading">Expiring Soon</h4>
+                    <ul id="expiring-docs-list"></ul>
+					<div class="modal-footer">
+                
+				<button type="button" id="generateReportBtn">Generate Report</button>
+           </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+	<div id="statusLogModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="statusLogTitle">
+        <div class="modal-content">
+            <button id="closeStatusLogModalBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+            <h2 id="statusLogTitle" class="modal-title">Renewal Status Log</h2>
+            <div class="comment-history-container">
+                <ul id="commentHistoryList" class="comment-history-list">
+                    </ul>
+            </div>
+            <form id="newCommentForm" class="modal-form" novalidate>
+                <div class="form-grid" style="grid-template-columns: 1fr; gap: 1rem;">
+                    <div class="grid-span-2">
+                        <label for="newCommentText">New Log Entry / Status</label>
+                        <textarea id="newCommentText" name="newCommentText" required></textarea>
+                    </div>
+                    <div class="grid-span-2">
+                        <label for="newCommentor">Comment By</label>
+                        <input type="text" id="newCommentor" name="newCommentor" required />
+                    </div>
+                </div>
+                <div class="flex-justify-between" style="margin-top: 1rem;">
+                    <button type="submit">Save Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+	
+	<div id="notificationActionModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="notificationActionTitle">
+        <div class="modal-content" style="max-width: 500px;">
+            <button id="closeNotificationActionModalBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+            <h2 id="notificationActionTitle" class="modal-title">Action For:</h2>
+            <div id="notificationActionContent" style="text-align: center; margin-bottom: 2rem;"></div>
+            <div class="flex-justify-between" style="display: flex; justify-content: center; gap: 1rem;">
+                <button type="button" id="actionViewStatusBtn">View Renewal Status</button>
+                <button type="button" id="actionRenewBtn">Renew Document Now</button>
+            </div>
+        </div>
+    </div>
+    <div id="deleteModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+        <div class="modal-content">
+            <button id="closeDeleteModalBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+            <h2 id="delete-modal-title" class="modal-title">Delete Document</h2>
+            <p>Are you sure you want to permanently delete this document? This action cannot be undone.</p>
+            <div class="flex-justify-between" style="margin-top: 1.5rem;">
+                <button type="button" id="delete-cancel" style="color: black;">Cancel</button>
+                <button type="button" id="delete-confirm" style="background-color: var(--color-danger); color: white;"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:0.9rem; height:0.9rem;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg> Remove</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="deleteAttachmentModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="delete-attachment-modal-title">
+        <div class="modal-content">
+            <button id="closeDeleteAttachmentModalBtn" class="modal-close-btn" aria-label="Close modal">&times;</button>
+            <h2 id="delete-attachment-modal-title" class="modal-title">Remove Attachment</h2>
+            <p>Are you sure you want to remove the attached file? This action cannot be undone.</p>
+            <div class="flex-justify-between" style="margin-top: 1.5rem;">
+                <button type="button" id="delete-attachment-cancel" style="color: black;">Cancel</button>
+                <button type="button" id="delete-attachment-confirm" style="background-color: var(--color-danger); color: white;">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:1rem; height:1rem; margin-right:0.25rem; vertical-align:middle;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg> Remove
+                </button>
+            </div>
+        </div>
+    </div>
+<script src="script.js"></script>
+</body>
+</html>
